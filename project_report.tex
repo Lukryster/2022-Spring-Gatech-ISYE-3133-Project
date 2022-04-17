@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+
+%%% Useful packages
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{graphicx}
+
+
+%%% Sets page margins, overriding 11pt article defaults
+\setlength{\topmargin}{0 in}
+\setlength{\headheight}{0 in}
+\setlength{\headsep}{0 in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\textwidth}{6.5 in}
+\setlength{\textheight}{9 in}
+
+%%% Useful for layout
+\newcommand{\VF}{\vspace*{\fill}}
+\newcommand{\HF}{\hspace*{\fill}}
+
+%%% shorthand for sets
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\B}{\beta}
+
+
+\begin{document}
+
+{\noindent\Large\textbf{ISYE 3133 Nucleic Acid Folding Project Formulation Report}}
+
+\vspace{.25in}
+
+{\large
+\noindent
+\textbf{Name: Bijie Liu, Xilei Zhu} \smallskip \\
+
+
+
+
+\begin{enumerate}
+\item  Introduction\\
+In Biology, there are four kinds of Nucleic Acid alphabet, $A,C,G,U$ and they form the Nucleic Acid. By pairing two characters, we enhance the bond of Nucleic Acid, and each character can only be in one pair. A pair is called Complemtary if the pair is $(A,U)$ or $(C,G)$, otherwise, it is called Non-Complemtary. A pairing is the set of disjoint pairs of characters in $S$, which denotes a string of $n$ characters made up from $\{A,C,G,U\}$. The entire pairing is called Nested if all pairs are complemtary and when we draw a line to represent the connection, no lines are corssing. Mathematically speaking, we need to have a complemtary planar graph. Complemtary pair has higher weight, Non-Complemtary pair has little weight or none. Higher overall weight represents more stable Nucleic Acid Folding.\\
+
+In this assignment, we are givne a string $S$ of length $n$. For the character of the first position of the string, denote it with $S[1]$, and the last position's character, denote it with $S[n]$.\\
+For our first model of Simple Biological Enhancements, we are maximizing the total weight of our Nucleic Acid. With the constrains stated in the introduction alongside with three others. 
+\begin{enumerate}
+    \item Distance of any pair must be 3 away.
+    \item Weight of different pairing is different to encourage to pair with a higher weight to gain a more stable Nucleic Acid Folidng.
+    \item We assign little weight to Non-Complemtary pairs to encourage not giving up on the non-paired characters.
+\end{enumerate}
+
+
+Our second model of More Complex Biological Enhancements, we are introducing several more definitions and constrains. For this model, we are maximizing the total weight plus the number of stacked quartets.
+\begin{enumerate}
+    \item Base Stacking: A matched pair $(i,j)$ in a nested pairing is called a Stacked Pair if either $(i+1,j-1)$ or $(i-1,j+1)$ is also a matched pair in the nested pairing.
+    \item Stakced Quartet: If $(i,j)$ and $(i+1,j-1)$ are stacked pairs. $(i,i+1,j-1,j)$ is called stacked quartet is $i<i+1<j-1<j$.\\
+    \textbf{Stacking contributes a lot to the stability to the Nucleic Acid Folding.}
+
+    \item Weight of stacked quartet in nested pairing: Since stacking will enhance the stability of the folding, so we are awarding more weight to those stacked quartet according to the table given.
+    \item We are also awarding more weight to a stacked quartet if it is the first or last quartet in a stack.
+    \item We are allowing crossing pairs, and the number of maxmium crossing pairs is at most 10.
+\end{enumerate}
+\pagebreak
+
+\item Model for The First Crude Model
+
+\textit{Variables:}
+\begin{enumerate}
+    \item Binary Integer lienar variable: $P(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i < j$ such that: if $i$ pairs with $j$, then $P(i,j)=1$.
+    \item $a_i = 1$ if $S[i] = A$, otherwise $a_i=0$.
+    \item $u_i = 1$ if $S[i] = U$, otherwise $u_i=0$.
+    \item $g_i = 1$ if $S[i] = G$, otherwise $g_i=0$.
+    \item $c_i = 1$ if $S[i] = C$, otherwise $c_i=0$.
+\end{enumerate}
+
+\textit{Objective Function:}\\
+Max $\sum_{i<j}P(i,j)$, $\forall i,j\in \{1,\dots, n\}$\\
+
+\textit{Constrains:}
+\begin{enumerate}
+    \item $P(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$ and $i<j$.
+    
+    \item $a_i,u_i,g_i,c_i\in \{0,1\},\forall i\in \{1,\dots, n\}$.
+
+    \item For each $j\in  \{1,\dots, n\}$, $\sum_{k>j}P(j,k)+\sum_{k<j}P(k,j)\leq 1 \textrm{ for all }k\in \{1,\dots, n\}$. Each character can be in at most one matched pair.
+    
+    \item For every four positions, say $i,i',j ,j'\in \{1,\dots, n\}$ where $i<i'<j<j'$ such that $P(i,j)+P(i',j')\leq 1, \forall i,j,i',j' \in \{1,\dots, n\}$. Non-crossing or nested condition.\\
+
+    \textbf{Complemtary Pairs Constrains:}
+    \item $P(i,j)\leq 2-(u_i+u_j+g_i+g_j)$, $\forall i,j\in \{1,\dots, n\}$ and $i<j$.
+
+    \item $P(i,j)\leq 2-(u_i+u_j+c_i+c_j)$, $\forall i,j\in \{1,\dots, n\}$ and $i<j$.
+
+    \item $P(i,j)\leq 2-(a_i+a_j+c_i+c_j)$, $\forall i,j\in \{1,\dots, n\}$ and $i<j$.
+
+    \item $P(i,j)\leq 2-(a_i+a_j+g_i+g_j)$, $\forall i,j\in \{1,\dots, n\}$ and $i<j$.
+\end{enumerate}
+
+\item Model for Simple Biological Enhancements
+\newline
+
+\textit{Variables:}
+\begin{enumerate}
+    \item Binary Integer linear variable: $P(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i < j$ such that:
+    if $i$ pairs with $j$, then $P(i,j)=1$.
+\end{enumerate}
+
+
+
+\textit{Data:}
+\begin{enumerate}
+    \item $\forall i,j \in \{1,\dots, n\}$, $i<j$, $S[i]\neq S[j]$, such that:\\
+    $S[i],S[j] \in \{C,G\}$, then $W(i,j)$ = 3.\\
+    $S[i],S[j] \in \{A,U\}$, then $W(i,j)$ = 2.\\
+    $S[i],S[j] \in \{G,U\}$, then $W(i,j)$ = 0.1.\\
+    $S[i],S[j] \in \{A,C\}$, then $W(i,j)$ = 0.05.\\
+    Otherwise, $W(i,j) = 0$.\\
+\end{enumerate}
+
+\textit{Objective Function:}\\
+Max $\sum_{i<j}W(i,j)*P(i,j)$, $\forall i,j\in \{1,\dots, n\}$. Maximizing the total weight of Nucleic Acid Folding.\\
+
+\textit{Constrains:}
+\begin{enumerate}
+    \item $P(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+    
+    
+    \item $P(i,j)=0$ if $|i-j|\leq 3, \forall i,j\in \{1,\dots, n\}$. Any pair must be at least distance 3 away.
+
+    \item For each $j\in  \{1,\dots, n\}$, $\sum_{k>j}P(j,k)+\sum_{k<j}P(k,j)\leq 1 \textrm{ for all }k\in \{1,\dots, n\}$. Each character can be in at most one matched pair.
+    
+    \item For every four positions, say $i,i',j ,j'\in \{1,\dots, n\}$ where $i<i'<j<j'$ such that $P(i,j)+P(i',j')\leq 1, \forall i,j,i',j' \in \{1,\dots, n\}$. Non-crossing or nested condition.
+    
+\end{enumerate}
+
+
+\item Model for More Complex Biological Enhancements\\
+\textit{Variables:}
+\begin{enumerate}
+    \item Binary Integer lienar variable: $P(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i<j$ such that:
+    if $i$ pairs with $j$, then $P(i,j)=1$.\\
+
+    \item Integer lieanr variable: $C(i,j,i',j')$ for position $i,j,i',j'\in \{1,\dots, n\}$ such that:\\
+    if $(i,j)$ and $(i',j')$ are matched pairs that cross, then $C(i,j,i',j')=1$, $\forall i,j,i',j' \in \{1,\dots, n\}$.\\
+
+    \item Binary Integer linear variable $Q(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i<j$. $Q(i,j)=1$ if the matched pair $(i,j)$ is the first pair in a stacked quartet, otherwise, $Q(i,j)=0$.\\
+
+    \item Binary Integer linear variable $F(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i<j$. $F(i,j)=1$ if $(i,i+1,j-1,j)$ is the first stacked quartet in a stack.\\
+
+    \item Binary Integer linear variable $L(i,j)$ for position $i,j\in \{1,\dots, n\}$ and $i<j$. $L(i,j)=1$ if $(i,i+1,j-1,j)$ is the last stacked quartet in a stack.\\
+\end{enumerate}
+
+\textit{Data:}
+\begin{enumerate}
+    \item $\forall i,j \in \{1,\dots, n\}$ and $i<j-2$, such that:\\
+    If $S[i],S[j],S[i+1],S[j-1] = A,U,A,U$ respectively, then $V(i,j)$ = 9.\\
+    If $S[i],S[j],S[i+1],S[j-1] = A,U,C,G$ respectively, then $V(i,j)$ = 21.\\
+    If $S[i],S[j],S[i+1],S[j-1] = A,U,G,C$ respectively, then $V(i,j)$ = 24.\\
+    If $S[i],S[j],S[i+1],S[j-1] = A,U,U,A$ respectively, then $V(i,j)$ = 13.\\
+    If $S[i],S[j],S[i+1],S[j-1] = C,G,A,U$ respectively, then $V(i,j)$ = 22.\\
+    If $S[i],S[j],S[i+1],S[j-1] = C,G,C,G$ respectively, then $V(i,j)$ = 33.\\
+    If $S[i],S[j],S[i+1],S[j-1] = C,G,G,C$ respectively, then $V(i,j)$ = 34.\\
+    If $S[i],S[j],S[i+1],S[j-1] = C,G,U,A$ respectively, then $V(i,j)$ = 24.\\
+    If $S[i],S[j],S[i+1],S[j-1] = G,C,A,U$ respectively, then $V(i,j)$ = 21.\\
+    If $S[i],S[j],S[i+1],S[j-1] = G,C,C,G$ respectively, then $V(i,j)$ = 24.\\
+    If $S[i],S[j],S[i+1],S[j-1] = G,C,G,C$ respectively, then $V(i,j)$ = 33.\\
+    If $S[i],S[j],S[i+1],S[j-1] = G,C,U,A$ respectively, then $V(i,j)$ = 16.\\
+    Otherwise, $W(i,j) = 0$.\\
+    \item $\forall i,j \in \{1,\dots, n\}$, $i<j$, $S[i]\neq S[j]$, such that:\\
+    $S[i],S[j] \in \{C,G\}$, then $W(i,j)$ = 3.\\
+    $S[i],S[j] \in \{A,U\}$, then $W(i,j)$ = 2.\\
+    $S[i],S[j] \in \{G,U\}$, then $W(i,j)$ = 0.1.\\
+    $S[i],S[j] \in \{A,C\}$, then $W(i,j)$ = 0.05.\\
+    Otherwise, $W(i,j) = 0$.\\
+\end{enumerate}
+
+\textit{Objective Function:}\\
+Max $\sum_{i=1}^{n}V(i,j)*Q(i,j)+\sum_{i<j}W(i,j)*P(i,j)+\sum_{i<j}Q(i,j)$, $\forall i,j\in \{1,\dots, n\}$ and $i<j$.\\
+
+\textit{Constrains:}
+\begin{enumerate}
+    \item $P(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+    
+    \item $C(i,j,i',j')\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+    
+    \item $Q(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+    
+    \item $F(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+
+    \item $L(i,j)\in \{0,1\}$, $\forall i,j \in \{1,\dots, n\}$, and $i<j$.
+
+    \item $P(i,j)=0$ if $|i-j|\leq 3$. Any pair must be at least distance 3 away, $\forall i,j \in \{1,\dots, n\}$.
+
+    \item For each $j\in  \{1,\dots, n\}$, $\sum_{k>j}P(j,k)+\sum_{k<j}P(k,j)\leq 1 \textrm{ for all }k\in \{1,\dots, n\}$. Each character can be in at most one matched pair.
+    
+    \textbf{Allowing Crossing Constrains:}
+    \item For any choice of $i,j,i',j'\in \{1,\dots, n\}$, such that $i<i'<j<j'$, $P(i,j)+P(i',j')-C(i,i'j,j')\leq 1$. To allow crossing pairs.
+
+    \item $\sum_{i,i',j,j'}C(i,j,i',j') \leq 10$. Allowing up to at most $C=10$ crossing pairs.
+
+    \textbf{Counting Stacked Quartets:}
+    \item $P(i,j)+P(i+1,j-1)-Q(i,j) \leq 1$,  $\forall i,j\in \{1,\dots,n\}$ where $j>i$ and $i<i+1<j-1<j$. Enforcing if $(i,j)$ and $(i+1,j-1)$ are in the nested pairing, then $Q(i,j)$ must be $1$.
+    
+    \item $2Q(i,j)-P(i,j)-P(i+1,j-1) \leq 0$, $\forall i,j\in \{1,\dots,n\}$. If $Q(i,j)$ is set to $1$. then $P(i,j)$ and $P(i+1,j-1)$ must be set to 1.
+
+    \textbf{Determining first/last stacked quartet in a stack}
+    \item $Q(i,j)-Q(i-1,j+1)-F(i,j) \leq 0$, $\forall i,j\in \{1,\dots,n\}$. If $(i,j)$ pair is the first pair in its quartet, and $(i+1,j-1)$ is the first pair in its quartet, then the stacked quartet of $(i,i+1,j,j-1)$ is the first quartet in its stacked quartet.
+
+    \item $2F(i,j)-Q(i,j)+Q(i-1,j+1) \leq 1$,  $\forall i,j\in \{1,\dots,n\}$. If $F(i,j)$ is set to 1, then both $Q(i,j)$ and $Q(i-1,j+1)$ need to be set to 1.
+    
+    \item $P(i,j)-P(i-1,j+1)-L(i,j) \leq 0$,  $\forall i,j\in \{1,\dots,n\}$. If $(i,j)$ pair is the last pair in its quartet, and $(i+1,j-1)$ is the last pair in its quartet accordingly, then the stacked quartet of $(i,i+1,j,j-1)$ is the last quartet in its stacked quartet.
+
+    \item $2L(i,j)-P(i,j)+P(i-1,j+1) \leq 1$,  $\forall i,j\in \{1,\dots,n\}$. If $L(i,j)$ is set to 1, then both $Q(i,j)$ and $Q(i-1,j+1)$ need to be set to 1.
+
+    \item $\forall i,j\in \{1,\dots,n\}$, $W(i,j) = F(i,j)*W(i,j)+W(i,j)$. Doubled the weight if its first quartet.
+
+    \item $\forall i,j\in \{1,\dots,n\}$, $W(i,j) = L(i,j)*W(i,j)+W(i,j)$. Doubled the weight if its last quartet.
+    
+    % \item $\sum_{(i,j)\in \textrm{NCpairs}} \leq c * \sum_{(i,j)P(i,j)}$ where $c$ is a multipliers of allowed pairs of non-complemtary pairs. Non-complemtary pairs onstrain.
+\end{enumerate}
+
+
+\item Size of formulation:\\
+We are given a length of $n$ string.
+\begin{enumerate}
+    \item 1.1 The first crude model\\
+    Number of Variables:
+    \begin{enumerate}
+        \item Number of $P(i,j)=$ $(n-1)!$
+        \item Number of $a_i = n$
+        \item Number of $u_i = n$
+        \item Number of $g_i = n$
+        \item Number of $c_i = n$
+    \end{enumerate}
+    Number of Constrains:
+    \begin{enumerate}
+        \item (a): $(n-1)!$
+        \item (b): $4n$
+        \item (c): $n$
+        \item (d): $(n-3)(n-2)(n-1)n$
+        \item (e-h): $4(n-1)!$
+    \end{enumerate}
+    Let $f(n)$ denotes the mapping from $|S|=n$ to number of variables and constrains, and $f(n)=2((n-1)!)+5n+(n-3)(n-2)(n-1)n+4(n-1)!$.
+    
+    \item 1.2 Simple Biological Enhancements\\
+    Number of Variables:
+    \begin{enumerate}
+        \item Number of $P(i,j) = (n-1!)$
+    \end{enumerate}
+    Number of Constrains:
+    \begin{enumerate}
+        \item (a): $(n-1)!$
+        \item (b): $3n$
+        \item (c): $n$
+        \item (d): $(n-3)(n-2)(n-1)n$
+    \end{enumerate}
+    Let $g(n)$ denotes the mapping from $|S|=n$ to number of variables and constrains, and $f(n)=2((n-1)!)+4n+(n-3)(n-2)(n-1)n+4(n-1)!$.
+
+    \item 1.3 More Complex Biological Enhancements\\
+    Number of Variables:
+    \begin{enumerate}
+        \item Number of $P(i,j) = (n-1)!$
+        \item Number of $P(i,j) = \binom{n}{4}$
+        \item Number of $Q(i,j) = (n-1)!$
+        \item Number of $F(i,j) = (n-1)!$
+        \item Number of $L(i,j) = (n-1)!$
+    \end{enumerate}
+    Number of Constrains:
+    \begin{enumerate}
+        \item (a): $(n-1)!$
+        \item (b): $\binom{n}{4}$
+        \item (c,d,e): $3((n-1)!)$
+        \item (f): $3n$
+        \item (g): $n$
+        \item (h): $\binom{n}{4}$
+        \item (i): $1$
+        \item (j,k, ... , q): $8((n-1)!)$
+    \end{enumerate}
+    Let $p(n)$ denotes the mapping from $|S|=n$ to number of variables and constrains, and $p(n) = 16(n-1)! + 3*\binom{n}{4}+4n+1$
+\end{enumerate}
+\end{enumerate}
+
+\end{document}
+
+
