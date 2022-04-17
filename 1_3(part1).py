@@ -62,10 +62,13 @@ for i in range (0,length):
 
 
 for i in range(0,length -3):
-    for j in range(i+3, length):
+    for j in range(i, length):
+        if abs(i-j) < 3:
+            m.addConstr(Q[i,j] == 0)
+            continue
         # Counting Stacked Quartets:
         # (j)
-        m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
+        # m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
         # (k) 
         m.addConstr(2*Q[i,j] - P[i,j] - P[i+1,j-1] <= 0)
 

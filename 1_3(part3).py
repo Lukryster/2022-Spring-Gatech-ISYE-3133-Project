@@ -59,7 +59,6 @@ for i in range(0,length-3):
 # decision variables
 m = Model("Project")
 P = m.addVars(length,length, vtype=GRB.BINARY, name = "P")
-C = m.addVars(length,length,length,length, vtype=GRB.BINARY, name = "C")
 Q = m.addVars(length,length, vtype=GRB.BINARY, name = "Q")
 F = m.addVars(length,length, vtype=GRB.BINARY, name = "F")
 L = m.addVars(length,length, vtype=GRB.BINARY, name = "L")
@@ -83,6 +82,10 @@ for i in range (0,length):
             m.addConstr(P[i,q] == 0)
     # set duplicated pairs to 0
     for j in range (i+1, length):
+        # set F, and L to 0 if distance < 3
+        if abs(i-j)<3:
+            m.addConstr(F[i,j] == 0)
+            m.addConstr(L[i,j] == 0)
         if (i>j):
             m.addConstr(P[i,j] == 0)
         # (h&i): no crossing
@@ -93,15 +96,24 @@ for i in range (0,length):
 m.addConstr(crossingBuffer <= 10)
 
 for i in range(0,length -3):
-    for j in range(i+3, length):
+    for j in range(i, length):
         # Counting Stacked Quartets:
         # (j)
-        m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
+        # m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
         # (k) 
+        if abs(i-j) < 3:
+            m.addConstr(Q[i,j] == 0)
+            continue
         m.addConstr(2*Q[i,j] - P[i,j] - P[i+1,j-1] <= 0)
         # Determining first/last stacked quartet in a stack
         # skip the case for i=0 and j = length case for the following constrains
-        if i == 0 or j == length-1:
+        if i == 0:
+            m.addConstr(F[0,j] == 0)
+            m.addConstr(L[0,j] == 0)
+            continue
+        if  j == length-1:
+            m.addConstr(F[i,19] == 0)
+            m.addConstr(L[i,19] == 0)
             continue
         # # (l)
         # m.addConstr(Q[i,j] - Q[i-1,j+1] - F[i,j] <= 0)
@@ -112,7 +124,7 @@ for i in range(0,length -3):
         # # (o)
         # m.addConstr(2*L[i,j] - P[i,j] + P[i-1,j+1] <= 1)
         m.addConstr(Q[i,j] >= F[i,j])
-        m.addConstr(Q[i,j] + (1-Q[i-1,j+1]) >= 2*F[i,j])
+        m.addConstr(Q[i,j] + (1-Q[i-1, j+1]) >= 2*F[i,j])
         m.addConstr(Q[i,j] >= L[i,j])
         m.addConstr(Q[i,j] + (1-Q[i+1, j-1]) >= 2*L[i,j])
         
