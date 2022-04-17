@@ -147,4 +147,4 @@ if status == 2:
     for v in m.getVars():
         print("%s = %g" % (v.varName, v.x))
     print("Optimal objective value:\n{}".format(m.objVal))
-    m.write("1.3part3",length, ".lp")
+    m.write("1.3part3.lp")
