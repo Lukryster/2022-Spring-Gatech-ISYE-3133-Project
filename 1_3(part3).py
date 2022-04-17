@@ -1,7 +1,6 @@
 #----------------------------------------------------------------------------
 # Created By  : Bijie Liu
 # ---------------------------------------------------------------------------
-from audioop import cross
 from gurobipy import * 
 
 # data
@@ -13,6 +12,7 @@ print(length)
 
 # initialize weight and distance for each pair
 W = [[0 for i in range(length)] for j in range(length)]
+V = [[0 for i in range(length)] for j in range(length)]
 D = [[0 for i in range(length)] for j in range(length)]
 
 # pair weight
@@ -27,16 +27,46 @@ for i in range(0, length):
         elif (S[i] == "A" and S[j] == "C") or S[i] == "C" and S[j] == "A":
             W[i][j] = 0.05
 
-
+# quartet weight
+for i in range(0,length-3):
+    for j in range(i+3, length-1):
+        if (S[i] == "A" and S[j] == "U" and S[i+1] == "A" and S[j-1] == "U"):
+            V[i][j] = 9
+            print(i,j)
+        elif (S[i] == "A" and S[j] == "U" and S[i+1] == "C" and S[j-1] == "G"):
+            V[i][j] = 21
+        elif (S[i] == "A" and S[j] == "U" and S[i+1] == "G" and S[j-1] == "C"):
+            V[i][j] = 24
+        elif (S[i] == "A" and S[j] == "U" and S[i+1] == "U" and S[j-1] == "A"):
+            V[i][j] = 13
+        elif (S[i] == "C" and S[j] == "G" and S[i+1] == "A" and S[j-1] == "U"):
+            V[i][j] = 22
+        elif (S[i] == "C" and S[j] == "G" and S[i+1] == "C" and S[j-1] == "G"):
+            V[i][j] = 33
+        elif (S[i] == "C" and S[j] == "G" and S[i+1] == "G" and S[j-1] == "C"):
+            V[i][j] = 34
+        elif (S[i] == "C" and S[j] == "G" and S[i+1] == "U" and S[j-1] == "A"):
+            V[i][j] = 24
+        elif (S[i] == "G" and S[j] == "C" and S[i+1] == "A" and S[j-1] == "U"):
+            V[i][j] = 21
+        elif (S[i] == "G" and S[j] == "C" and S[i+1] == "C" and S[j-1] == "G"):
+            V[i][j] = 24
+        elif (S[i] == "G" and S[j] == "C" and S[i+1] == "G" and S[j-1] == "C"):
+            V[i][j] = 33
+        elif (S[i] == "G" and S[j] == "C" and S[i+1] == "U" and S[j-1] == "A"):
+            V[i][j] = 16
 
 # decision variables
 m = Model("Project")
 P = m.addVars(length,length, vtype=GRB.BINARY, name = "P")
+C = m.addVars(length,length,length,length, vtype=GRB.BINARY, name = "C")
 Q = m.addVars(length,length, vtype=GRB.BINARY, name = "Q")
+F = m.addVars(length,length, vtype=GRB.BINARY, name = "F")
+L = m.addVars(length,length, vtype=GRB.BINARY, name = "L")
 
 # objective
 m.setObjective(
-    quicksum(Q[i,j] for i in range(0,length-3) for j in range(i+1,length))+
+    quicksum(F[i,j] + L[i,j] + Q[i,j] for i in range(0,length-3) for j in range(i+1,length))+
     quicksum(W[i][j]*P[i,j] for i in range(0,length) for j in range(i+1,length))
     , GRB.MAXIMIZE)
 
@@ -44,6 +74,7 @@ m.setObjective(
 
 
 # contrains
+crossingBuffer = 0
 # (f): distance >= 3
 for i in range (0,length):
     for q in range (i+1, length):
@@ -54,12 +85,12 @@ for i in range (0,length):
     for j in range (i+1, length):
         if (i>j):
             m.addConstr(P[i,j] == 0)
-        #none-crossing
+        # (h&i): no crossing
         for p in range (2,length):
             for q in range(3,length):
                 if i<p<j<q:
                     m.addConstr(P[i,j]+P[p,q] <= 1)
-
+m.addConstr(crossingBuffer <= 10)
 
 for i in range(0,length -3):
     for j in range(i+3, length):
@@ -68,6 +99,26 @@ for i in range(0,length -3):
         m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
         # (k) 
         m.addConstr(2*Q[i,j] - P[i,j] - P[i+1,j-1] <= 0)
+        # Determining first/last stacked quartet in a stack
+        # skip the case for i=0 and j = length case for the following constrains
+        if i == 0 or j == length-1:
+            continue
+        # # (l)
+        # m.addConstr(Q[i,j] - Q[i-1,j+1] - F[i,j] <= 0)
+        # # (m)
+        # m.addConstr(2*F[i,j] - Q[i,j] + Q[i-1,j+1] <= 1)
+        # # (n)
+        # m.addConstr(P[i,j] - P[i-1,j+1] - L[i,j] <= 0)
+        # # (o)
+        # m.addConstr(2*L[i,j] - P[i,j] + P[i-1,j+1] <= 1)
+        m.addConstr(Q[i,j] >= F[i,j])
+        m.addConstr(Q[i,j] + (1-Q[i-1,j+1]) >= 2*F[i,j])
+        m.addConstr(Q[i,j] >= L[i,j])
+        m.addConstr(Q[i,j] + (1-Q[i+1, j-1]) >= 2*L[i,j])
+        
+        # (p) & (q)
+        W[i][j] += F[i,j]*W[i][j]
+        W[i][j] += L[i,j]*W[i][j]
 
 # (g) unique(each position can only be in one pair)
 for k in range(0, length):
@@ -96,4 +147,4 @@ if status == 2:
     for v in m.getVars():
         print("%s = %g" % (v.varName, v.x))
     print("Optimal objective value:\n{}".format(m.objVal))
-    m.write("1.3part1.lp")
+    m.write("1.3part3",length, ".lp")

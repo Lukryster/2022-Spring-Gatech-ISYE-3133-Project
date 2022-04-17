@@ -2,7 +2,6 @@
 # Created By  : Bijie Liu
 # ---------------------------------------------------------------------------
 from audioop import cross
-import pandas as pd
 from gurobipy import * 
 
 # data
@@ -150,4 +149,4 @@ if status == 2:
     for v in m.getVars():
         print("%s = %g" % (v.varName, v.x))
     print("Optimal objective value:\n{}".format(m.objVal))
-    m.write("1_3(part4).lp")
+    m.write("1.3part4",length, ".lp")
