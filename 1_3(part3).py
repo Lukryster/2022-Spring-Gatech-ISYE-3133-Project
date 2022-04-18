@@ -65,7 +65,7 @@ L = m.addVars(length,length, vtype=GRB.BINARY, name = "L")
 
 # objective
 m.setObjective(
-    quicksum(F[i,j] + L[i,j] + Q[i,j] for i in range(0,length-3) for j in range(i+1,length))+
+    quicksum(V[i][j]*(F[i,j] + L[i,j] + Q[i,j]) for i in range(0,length-3) for j in range(i+1,length))+
     quicksum(W[i][j]*P[i,j] for i in range(0,length) for j in range(i+1,length))
     , GRB.MAXIMIZE)
 
@@ -88,12 +88,16 @@ for i in range (0,length):
             m.addConstr(L[i,j] == 0)
         if (i>j):
             m.addConstr(P[i,j] == 0)
+        if (W[i][j] == 0):
+            m.addConstr(P[i,j] == 0)
         # (h&i): no crossing
         for p in range (2,length):
             for q in range(3,length):
                 if i<p<j<q:
                     m.addConstr(P[i,j]+P[p,q] <= 1)
-m.addConstr(crossingBuffer <= 10)
+                    # m.addConstr(P[i,j]+P[p,q]-C[i,p,j,q] <= 1)
+                    # crossingBuffer += C[i,p,j,q]
+# m.addConstr(crossingBuffer <= 10)
 
 for i in range(0,length -3):
     for j in range(i, length):
@@ -112,8 +116,8 @@ for i in range(0,length -3):
             m.addConstr(L[0,j] == 0)
             continue
         if  j == length-1:
-            m.addConstr(F[i,19] == 0)
-            m.addConstr(L[i,19] == 0)
+            m.addConstr(F[i,j] == 0)
+            m.addConstr(L[i,j] == 0)
             continue
         # # (l)
         # m.addConstr(Q[i,j] - Q[i-1,j+1] - F[i,j] <= 0)

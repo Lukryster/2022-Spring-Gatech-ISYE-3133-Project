@@ -1,7 +1,6 @@
 #----------------------------------------------------------------------------
 # Created By  : Bijie Liu
 # ---------------------------------------------------------------------------
-from audioop import cross
 from gurobipy import * 
 
 # data
@@ -60,14 +59,14 @@ for i in range(0,length-3):
 # decision variables
 m = Model("Project")
 P = m.addVars(length,length, vtype=GRB.BINARY, name = "P")
-C = m.addVars(length,length,length,length, vtype=GRB.BINARY, name = "C")
 Q = m.addVars(length,length, vtype=GRB.BINARY, name = "Q")
 F = m.addVars(length,length, vtype=GRB.BINARY, name = "F")
 L = m.addVars(length,length, vtype=GRB.BINARY, name = "L")
+C = m.addVars(length, length, length, length, vtype = GRB.BINARY, name = "C")
 
 # objective
 m.setObjective(
-    quicksum(F[i,j] + L[i,j] + Q[i,j] for i in range(0,length-3) for j in range(i+1,length))+
+    quicksum(V[i][j]*(F[i,j] + L[i,j] + Q[i,j]) for i in range(0,length-3) for j in range(i+1,length))+
     quicksum(W[i][j]*P[i,j] for i in range(0,length) for j in range(i+1,length))
     , GRB.MAXIMIZE)
 
@@ -84,26 +83,42 @@ for i in range (0,length):
             m.addConstr(P[i,q] == 0)
     # set duplicated pairs to 0
     for j in range (i+1, length):
+        # set F, and L to 0 if distance < 3
+        if abs(i-j)<3:
+            m.addConstr(F[i,j] == 0)
+            m.addConstr(L[i,j] == 0)
         if (i>j):
             m.addConstr(P[i,j] == 0)
-        # (h&i): yes crossing
-        for p in range (i+2,length):
-            for q in range(i+3,length):
+        if (W[i][j] == 0):
+            m.addConstr(P[i,j] == 0)
+        # (h&i): no crossing
+        for p in range (2,length):
+            for q in range(3,length):
                 if i<p<j<q:
+                    # m.addConstr(P[i,j]+P[p,q] <= 1)
                     m.addConstr(P[i,j]+P[p,q]-C[i,p,j,q] <= 1)
                     crossingBuffer += C[i,p,j,q]
 m.addConstr(crossingBuffer <= 10)
 
 for i in range(0,length -3):
-    for j in range(i+3, length):
+    for j in range(i, length):
         # Counting Stacked Quartets:
         # (j)
-        m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
+        # m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
         # (k) 
+        if abs(i-j) < 3:
+            m.addConstr(Q[i,j] == 0)
+            continue
         m.addConstr(2*Q[i,j] - P[i,j] - P[i+1,j-1] <= 0)
         # Determining first/last stacked quartet in a stack
         # skip the case for i=0 and j = length case for the following constrains
-        if i == 0 or j == length-1:
+        if i == 0:
+            m.addConstr(F[0,j] == 0)
+            m.addConstr(L[0,j] == 0)
+            continue
+        if  j == length-1:
+            m.addConstr(F[i,j] == 0)
+            m.addConstr(L[i,j] == 0)
             continue
         # # (l)
         # m.addConstr(Q[i,j] - Q[i-1,j+1] - F[i,j] <= 0)
@@ -114,7 +129,7 @@ for i in range(0,length -3):
         # # (o)
         # m.addConstr(2*L[i,j] - P[i,j] + P[i-1,j+1] <= 1)
         m.addConstr(Q[i,j] >= F[i,j])
-        m.addConstr(Q[i,j] + (1-Q[i-1,j+1]) >= 2*F[i,j])
+        m.addConstr(Q[i,j] + (1-Q[i-1, j+1]) >= 2*F[i,j])
         m.addConstr(Q[i,j] >= L[i,j])
         m.addConstr(Q[i,j] + (1-Q[i+1, j-1]) >= 2*L[i,j])
         
@@ -149,4 +164,4 @@ if status == 2:
     for v in m.getVars():
         print("%s = %g" % (v.varName, v.x))
     print("Optimal objective value:\n{}".format(m.objVal))
-    m.write("1.3part4.lp")
+    m.write("1.3part3.lp")
