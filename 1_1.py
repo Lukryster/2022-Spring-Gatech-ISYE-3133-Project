@@ -34,8 +34,8 @@ for i in range (0,length):
     for j in range (1, length):
         if (i>=j):
             m.addConstr(P[i,j] == 0)
-        if (W[i][j] == 0):
-            m.addConstr(P[i,j] == 0)
+        # if (W[i][j] == 0):
+        #     m.addConstr(P[i,j] == 0)
         # (d): none-crossing
         for p in range (2,length):
             for q in range(3,length):
