@@ -6,6 +6,7 @@ from gurobipy import *
 
 # data
 S = "CGUCUUCACUACAGCAUCGG"
+# S = "CUGUCUCACAUCACGAUGCG"
 # S = "GACCUUACUGGGUACGAUUUACUGGAGGAC"
 # S = "GGCCAGACUGGUGGUGUGACUCCAGGCUAACCGGAUACGCGUGCCUCGGG"
 length = len(S)
@@ -60,7 +61,6 @@ for i in range (0,length):
                 if i<p<j<q:
                     m.addConstr(P[i,j]+P[p,q] <= 1)
 
-
 for i in range(0,length -3):
     for j in range(i, length):
         if abs(i-j) < 3:
@@ -71,7 +71,6 @@ for i in range(0,length -3):
         # m.addConstr(P[i,j] + P[i+1,j-1] - Q[i,j] <= 1)
         # (k) 
         m.addConstr(2*Q[i,j] - P[i,j] - P[i+1,j-1] <= 0)
-
 # (g) unique(each position can only be in one pair)
 for k in range(0, length):
     buffer = 0
@@ -88,6 +87,7 @@ for k in range(0, length):
 
 
 m.optimize()
+print("123: ",start - end)
 status_code = {1: 'LOADED', 2: 'OPTIMAL', 3: 'INFEASIBLE', 4: 'INF_OR_UNBD', 5: 'UNBOUNDED'}
 status = m.status
 

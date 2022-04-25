@@ -1,9 +1,9 @@
-PWD /Users/liubijie/Desktop/ISYE3133/isye 3133 project
+PWD /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report
 INPUT /usr/local/texlive/2020/texmf.cnf
 INPUT /usr/local/texlive/2020/texmf-dist/web2c/texmf.cnf
 INPUT /usr/local/texlive/2020/texmf-var/web2c/pdftex/pdflatex.fmt
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.tex
-OUTPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.log
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.tex
+OUTPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.log
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/base/article.cls
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/base/size11.clo
@@ -88,23 +88,23 @@ INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/graphics-def/pdftex.def
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.aux
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.aux
-OUTPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.aux
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.aux
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.aux
+OUTPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.aux
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/refcount/refcount.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 INPUT /usr/local/texlive/2020/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-OUTPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-OUTPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.pdf
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+OUTPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+OUTPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.pdf
 INPUT /usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT /usr/local/texlive/2020/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 INPUT /usr/local/texlive/2020/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
@@ -138,9 +138,9 @@ INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm1
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/local/texlive/2020/texmf-var/fonts/map/pdftex/updmap/pdftex.map
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/tfm/public/cm/cmti12.tfm
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.aux
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
-INPUT /Users/liubijie/Desktop/ISYE3133/isye 3133 project/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.aux
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
+INPUT /Users/liubijie/Desktop/ISYE3133/2022-Spring-Gatech-ISYE-3133-Project/Model Formulation Report/project_report.out
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/local/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb

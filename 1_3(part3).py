@@ -126,7 +126,7 @@ for i in range(0,length -3):
         # # (n)
         # m.addConstr(P[i,j] - P[i-1,j+1] - L[i,j] <= 0)
         # # (o)
-        # m.addConstr(2*L[i,j] - P[i,j] + P[i-1,j+1] <= 1)
+        m.addConstr(2*L[i,j] - P[i,j] + P[i-1,j+1] <= 1)
         m.addConstr(Q[i,j] >= F[i,j])
         m.addConstr(Q[i,j] + (1-Q[i-1, j+1]) >= 2*F[i,j])
         m.addConstr(Q[i,j] >= L[i,j])

@@ -4,7 +4,8 @@
 from gurobipy import * 
 
 # data
-S = "CGUCUUCACUACAGCAUCGG"
+# S = "CGUCUUCACUACAGCAUCGG"
+S = "CUGUCUCACAUCACGAUGCG"
 length = len(S)
 print(length)
 

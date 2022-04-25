@@ -5,6 +5,7 @@ from gurobipy import *
 
 # data
 S = "CGUCUUCACUACAGCAUCGG"
+# S = "CUGUCUCACAUCACGAUGCG"
 length = len(S)
 print(length)
 
@@ -41,8 +42,8 @@ for i in range (0,length):
         if D[i][q] < 3:
             # print("i: ",i, "q: ", q,"D: ", D[i][q])
             m.addConstr(P[i,q] == 0)
-    
     # set duplicated pairs to 0
+for i in range (0,length):
     for j in range (1, length):
         if (i>j):
             m.addConstr(P[i,j] == 0)
@@ -53,7 +54,6 @@ for i in range (0,length):
                     m.addConstr(P[i,j]+P[p,q] <= 1)
 
 # (c) unique
-
 for k in range(0, length):
     # m.addConstr(
     #     (quicksum(P[i,k]+P[k,i] for i in range(0,length))) <= 1
@@ -64,7 +64,6 @@ for k in range(0, length):
     for j in range(1,length):
         buffer = buffer + P[k,j]
     m.addConstr(buffer <= 1)
-
 # m.addConstr(quicksum(P[i,j] for j in range(0,length) for i in range(1,length)) <= 1)
 
 m.optimize()

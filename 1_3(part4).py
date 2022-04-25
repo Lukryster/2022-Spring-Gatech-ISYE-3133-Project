@@ -92,6 +92,7 @@ for i in range (0,length):
         if (W[i][j] == 0):
             m.addConstr(P[i,j] == 0)
         # (h&i): no crossing
+
         for p in range (2,length):
             for q in range(3,length):
                 if i<p<j<q:
@@ -99,7 +100,6 @@ for i in range (0,length):
                     m.addConstr(P[i,j]+P[p,q]-C[i,p,j,q] <= 1)
                     crossingBuffer += C[i,p,j,q]
 m.addConstr(crossingBuffer <= 10)
-
 for i in range(0,length -3):
     for j in range(i, length):
         # Counting Stacked Quartets:
@@ -153,6 +153,7 @@ for k in range(0, length):
 
 
 m.optimize()
+print("123: ",start - end)
 status_code = {1: 'LOADED', 2: 'OPTIMAL', 3: 'INFEASIBLE', 4: 'INF_OR_UNBD', 5: 'UNBOUNDED'}
 status = m.status
 
